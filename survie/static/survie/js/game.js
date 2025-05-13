@@ -188,9 +188,18 @@ class Game {
 
       // Vérifier si c'est un scénario de fin
       if (data.est_fin) {
-        this.progression = 100; // Assurer que la progression est à 100%
+        this.progression = 100; // Afficher la progression complète
         this.updateProgressionDisplay();
-        this.showEndingScreen(true, "Félicitations ! Vous avez réussi à survivre et à vous échapper de l'île !");
+        // Affichage conditionnel selon le scénario de fin
+        if (data.id === 12) {
+          this.showEndingScreen(true, "Félicitations ! Vous avez réussi à survivre et à vous échapper de l'île !");
+        } else if (data.id === 11) {
+          this.showEndingScreen(false, "Vous vous êtes perdu dans la grotte... Votre aventure s'arrête ici.");
+        } else if (data.id === 13) {
+          this.showEndingScreen(false, "Vous n'avez pas réussi à allumer un feu de signal. Vous restez bloqué sur l'île...");
+        } else {
+          this.showEndingScreen(false, "Fin de l'aventure.");
+        }
         return;
       }
 

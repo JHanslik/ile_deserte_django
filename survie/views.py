@@ -171,24 +171,52 @@ def scenario_view(request, scenario_id):
         
         # Filtrer les choix en fonction de l'inventaire du joueur
         for c in Choix.objects.filter(scenario=scenario):
-            if not c.requiert_objet or c.requiert_objet in joueur_state.inventaire:
-                choix_disponibles.append({
-                    'id': c.id,
-                    'description': c.texte,
-                    'requiert': c.requiert_objet,
-                    'effet_faim': c.delta_faim,
-                    'effet_energie': c.delta_energie,
-                    'effet_moral': c.delta_moral,
-                    'ajoute_objet': c.ajoute_objet
-                })
+            if not c.requiert_objet:
+                # Cas particulier : choix "Allumer un feu de signal (sans les bons objets)" sur la colline
+                if scenario.id == 10 and 'sans les bons objets' in c.texte:
+                    # On affiche ce choix uniquement si le joueur n'a pas tous les objets requis pour le vrai feu de signal
+                    objets_victoire = ['Bois sec', 'Pierre à feu']
+                    if not all(obj in joueur_state.inventaire for obj in objets_victoire):
+                        choix_disponibles.append({
+                            'id': c.id,
+                            'description': c.texte,
+                            'requiert': c.requiert_objet,
+                            'effet_faim': c.delta_faim,
+                            'effet_energie': c.delta_energie,
+                            'effet_moral': c.delta_moral,
+                            'ajoute_objet': c.ajoute_objet
+                        })
+                else:
+                    choix_disponibles.append({
+                        'id': c.id,
+                        'description': c.texte,
+                        'requiert': c.requiert_objet,
+                        'effet_faim': c.delta_faim,
+                        'effet_energie': c.delta_energie,
+                        'effet_moral': c.delta_moral,
+                        'ajoute_objet': c.ajoute_objet
+                    })
+            else:
+                # Supporte plusieurs objets requis séparés par une virgule
+                objets_requis = [o.strip() for o in c.requiert_objet.split(',')]
+                if all(obj in joueur_state.inventaire for obj in objets_requis):
+                    choix_disponibles.append({
+                        'id': c.id,
+                        'description': c.texte,
+                        'requiert': c.requiert_objet,
+                        'effet_faim': c.delta_faim,
+                        'effet_energie': c.delta_energie,
+                        'effet_moral': c.delta_moral,
+                        'ajoute_objet': c.ajoute_objet
+                    })
         
         # Vérifier si la progression est à 100% (victoire)
-        victory_by_progression = joueur_state.progression >= 100
+        # victory_by_progression = joueur_state.progression >= 100
         
         data = {
             'id': scenario.id,
             'description': scenario.texte,
-            'est_fin': scenario.est_fin or victory_by_progression,  # Victoire soit par fin scénario, soit par progression
+            'est_fin': scenario.est_fin,  # Victoire/défaite uniquement par scénario de fin
             'choix': choix_disponibles,
             'etat': {
                 'faim': joueur_state.faim,
