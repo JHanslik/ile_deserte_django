@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>L'Île Perdue - Jeu de Survie</title>
+    <link rel="stylesheet" href="{% static 'survie/css/style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="stats-container">
+        <div class="stat">
+          <span class="stat-label"><i class="fas fa-utensils"></i> Faim</span>
+          <div class="stat-bar">
+            <div class="stat-fill" id="faim-bar"></div>
+          </div>
+          <span class="stat-value" id="faim-value">100</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><i class="fas fa-bolt"></i> Énergie</span>
+          <div class="stat-bar">
+            <div class="stat-fill" id="energie-bar"></div>
+          </div>
+          <span class="stat-value" id="energie-value">100</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><i class="fas fa-smile"></i> Moral</span>
+          <div class="stat-bar">
+            <div class="stat-fill" id="moral-bar"></div>
+          </div>
+          <span class="stat-value" id="moral-value">100</span>
+        </div>
+      </div>
+
+      <div class="scenario-container">
+        <p id="scenario-text" class="scenario-text">
+          Tu te réveilles sur une plage déserte. Le soleil brille, mais tu ne te souviens pas comment tu es arrivé ici. Autour de toi, tu vois une jungle dense
+          et une plage qui s'étend à perte de vue.
+        </p>
+      </div>
+
+      <div class="choices-container" id="choices-container">
+        <!-- Les choix seront ajoutés dynamiquement ici -->
+      </div>
+    </div>
+
+    <script src="{% static 'survie/js/game.js' %}"></script>
+  </body>
+</html>
