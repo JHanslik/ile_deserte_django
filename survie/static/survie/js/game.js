@@ -151,7 +151,14 @@ class Game {
 
   async loadScenario(scenarioId, keepStats = false) {
     try {
-      const response = await fetch(`/api/scenario/${scenarioId}/`);
+      // Ajouter l'inventaire actuel comme paramètre de requête
+      let url = `/api/scenario/${scenarioId}/`;
+      if (this.inventaire && this.inventaire.length > 0) {
+        url += `?inventaire=${encodeURIComponent(this.inventaire.join(","))}`;
+      }
+      console.log("URL de requête:", url);
+
+      const response = await fetch(url);
       const data = await response.json();
 
       // Mettre à jour le texte du scénario
@@ -181,6 +188,9 @@ class Game {
           this.updateStats();
         }
       }
+
+      // Debug - Afficher l'inventaire dans la console
+      console.log("Inventaire actuel:", this.inventaire);
 
       // Afficher les choix disponibles
       const choicesContainer = document.querySelector(".choices-container");
